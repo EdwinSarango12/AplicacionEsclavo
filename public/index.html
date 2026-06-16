@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoElite — Sistema de Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-mark">AE</span>
+            <div class="logo-text">
+                <span class="logo-name">AutoElite</span>
+                <span class="logo-sub">Sistema Distribuido</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="inventory">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+                <span>Inventario</span>
+            </a>
+            <a href="#" class="nav-item" data-section="add">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="9" />
+                    <line x1="12" y1="8" x2="12" y2="16" />
+                    <line x1="8" y1="12" x2="16" y2="12" />
+                </svg>
+                <span>Agregar Vehículo</span>
+            </a>
+            <a href="#" class="nav-item" data-section="search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                </svg>
+                <span>Buscar</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-nodes">
+            <p class="nodes-label">NODOS ACTIVOS</p>
+            <div class="node-item">
+                <span class="node-dot master"></span>
+                <span>Maestro <em>:8080</em></span>
+            </div>
+            <div class="node-item">
+                <span class="node-dot slave"></span>
+                <span>Esclavo 1 <em>:8081</em></span>
+            </div>
+            <div class="node-item">
+                <span class="node-dot slave"></span>
+                <span>Esclavo 2 <em>:8082</em></span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 class="topbar-title">Inventario de Vehículos</h1>
+                <span class="topbar-count" id="vehicleCount">0 unidades</span>
+            </div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="7" />
+                        <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Buscar por marca, modelo..." />
+                </div>
+                <button class="btn-primary" id="openAddModal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Agregar Vehículo
+                </button>
+            </div>
+        </header>
+
+        <!-- STATS ROW -->
+        <section class="stats-row">
+            <div class="stat-card">
+                <span class="stat-label">Total Inventario</span>
+                <span class="stat-value" id="statTotal">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Precio Promedio</span>
+                <span class="stat-value gold" id="statAvail">—</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Precio Mínimo</span>
+                <span class="stat-value" id="statReserved">—</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Precio Máximo</span>
+                <span class="stat-value" id="statSold">—</span>
+            </div>
+        </section>
+
+        <!-- FILTER ROW -->
+        <div class="filter-row">
+            <select class="filter-select" id="filterMarca">
+                <option value="">Todas las marcas</option>
+            </select>
+            <select class="filter-select" id="filterColor">
+                <option value="">Todos los colores</option>
+            </select>
+            <select class="filter-select" id="filterAnio">
+                <option value="">Todos los años</option>
+            </select>
+        </div>
+
+        <!-- VEHICLE GRID -->
+        <section class="vehicle-grid" id="vehicleGrid">
+            <!-- Cards injected by JS -->
+        </section>
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="empty-icon">
+                <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="4" y="20" width="56" height="30" rx="4" />
+                    <path d="M12 20 L18 8 H46 L52 20" />
+                    <circle cx="16" cy="50" r="5" />
+                    <circle cx="48" cy="50" r="5" />
+                </svg>
+            </div>
+            <h3>Sin vehículos en inventario</h3>
+            <p>Agrega el primer vehículo para comenzar.</p>
+            <button class="btn-primary" id="emptyAddBtn">Agregar Vehículo</button>
+        </div>
+
+    </main>
+
+    <!-- ==================== MODAL ADD / EDIT ==================== -->
+    <div class="modal-overlay" id="formModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuevo Vehículo</h2>
+                <button class="modal-close" id="closeFormModal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="formId" />
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Marca <span class="req">*</span></label>
+                        <input type="text" id="formMarca" placeholder="ej. Toyota" />
+                    </div>
+                    <div class="form-group">
+                        <label>Modelo <span class="req">*</span></label>
+                        <input type="text" id="formModelo" placeholder="ej. Corolla" />
+                    </div>
+                    <div class="form-group">
+                        <label>Año <span class="req">*</span></label>
+                        <input type="number" id="formAnio" placeholder="ej. 2024" min="1980" max="2030" />
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" id="formColor" placeholder="ej. Blanco" />
+                    </div>
+                    <div class="form-group full">
+                        <label>Precio (USD) <span class="req">*</span></label>
+                        <input type="number" id="formPrecio" placeholder="ej. 22000" min="0" step="0.01" />
+                    </div>
+                </div>
+
+                <div class="form-error" id="formError"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-ghost" id="cancelFormModal">Cancelar</button>
+                <button class="btn-primary" id="saveVehicle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DETAIL ==================== -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal modal-detail">
+            <button class="modal-close" id="closeDetailModal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL CONFIRM DELETE ==================== -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>Eliminar Vehículo</h2>
+            </div>
+            <div class="modal-body">
+                <p class="delete-msg">¿Estás seguro de que deseas eliminar <strong id="deleteCarName"></strong> del
+                    inventario? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" id="cancelDelete">Cancelar</button>
+                <button class="btn-danger" id="confirmDelete">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script src="scripts/app.js"></script>
+</body>
+
+</html>
