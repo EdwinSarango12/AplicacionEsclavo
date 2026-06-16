@@ -8,31 +8,22 @@ const __dirname  = path.dirname(__filename);
 
 const app = express();
 
-// Permite JSON en el body (imágenes base64 si las agregas después)
 app.use(express.json({ limit: '15mb' }));
-
-// Sirve el frontend desde la carpeta public/
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ─────────────────────────────────────────────
-// POOL DE CONEXIÓN A MYSQL
-// Variables de entorno definidas en docker-compose
-// ─────────────────────────────────────────────
+
 const pool = mysql.createPool({
-  host:     process.env.DB_HOST     || 'db',        // nombre del servicio MySQL en docker-compose
+  host:     process.env.DB_HOST     || 'db',       
   user:     process.env.DB_USER     || 'root',
   password: process.env.DB_PASS     || 'password',
   database: process.env.DB_NAME     || 'autosdb',
   port:     process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  charset: 'utf8mb4',             // soporta tildes, ñ, caracteres especiales
+  charset: 'utf8mb4',             
 });
 
-// ─────────────────────────────────────────────
-// ASEGURA QUE LA TABLA `autos` EXISTA
-// No borra datos si ya existe
-// ─────────────────────────────────────────────
+
 async function ensureSchema() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS autos (
@@ -47,10 +38,7 @@ async function ensureSchema() {
   console.log('Tabla `autos` verificada/creada.');
 }
 
-// ─────────────────────────────────────────────
-// CORS — permite peticiones desde el frontend
-// en desarrollo (ajusta origin en producción)
-// ─────────────────────────────────────────────
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -155,11 +143,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ─────────────────────────────────────────────
-// INICIO DEL SERVIDOR
-// Reintenta conexión a MySQL hasta 10 veces
-// (el contenedor de MySQL puede tardar en arrancar)
-// ─────────────────────────────────────────────
+
 const PORT = process.env.PORT || 3000;
 
 async function start() {
