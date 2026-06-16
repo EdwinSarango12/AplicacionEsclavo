@@ -1,17 +1,4 @@
-/* =============================================
-   AUTO ELITE — CRUD JAVASCRIPT
-   Tabla: autos (id, marca, modelo, anio, color, precio)
-   Conecta a /api/autos  (server.js Express)
-   Fallback a localStorage para demo offline
-   ============================================= */
 
-// ──────────────────────────────────────────────
-// CONFIG
-// Ruta relativa: funciona cuando el frontend
-// es servido por el mismo contenedor Node.
-// Para abrir index.html directamente fuera de
-// Docker usa: http://localhost:3000/api/autosdb
-// ──────────────────────────────────────────────
 const BASE_URL = '/api/autosdb';
 
 // ──────────────────────────────────────────────
